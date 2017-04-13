@@ -123,9 +123,12 @@ EngineeringScreen::EngineeringScreen(GuiContainer* owner)
 
     (new GuiCustomShipFunctions(this, engineering, ""))->setPosition(-20, 120, ATopRight)->setSize(250, GuiElement::GuiSizeMax);
 
-    preset_controls = new GuiSystemsPresetControls(this, "PRESET_CONTROLS", &selected_system, coolant_slider, power_slider);
-    float preset_pos_x = - (preset_controls->getSize().x + system_config_container->getSize().x) / 2;
-    preset_controls->setPosition(preset_pos_x, system_config_container->getPositionOffset().y, ABottomCenter);
+    if(gameGlobalInfo->use_engineering_presets)
+    {
+        preset_controls = new GuiSystemsPresetControls(this, "PRESET_CONTROLS", &selected_system, coolant_slider, power_slider);
+        float preset_pos_x = - (preset_controls->getSize().x + system_config_container->getSize().x) / 2;
+        preset_controls->setPosition(preset_pos_x, system_config_container->getPositionOffset().y, ABottomCenter);
+    }
 
     previous_energy_level = 0.0;
     average_energy_delta = 0.0;

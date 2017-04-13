@@ -30,10 +30,11 @@ GameGlobalInfo::GameGlobalInfo()
     scanning_complexity = SC_Normal;
     long_range_radar_range = 30000;
     use_beam_shield_frequencies = true;
+    use_engineering_presets = true;
     use_system_damage = true;
     allow_main_screen_tactical_radar = true;
     allow_main_screen_long_range_radar = true;
-    
+
     intercept_all_comms_to_gm = false;
 
     registerMemberReplication(&scanning_complexity);
@@ -43,6 +44,7 @@ GameGlobalInfo::GameGlobalInfo()
     registerMemberReplication(&victory_faction);
     registerMemberReplication(&long_range_radar_range);
     registerMemberReplication(&use_beam_shield_frequencies);
+    registerMemberReplication(&use_engineering_presets);
     registerMemberReplication(&use_system_damage);
     registerMemberReplication(&allow_main_screen_tactical_radar);
     registerMemberReplication(&allow_main_screen_long_range_radar);
@@ -318,7 +320,7 @@ public:
     : script_name(script_name), variation(variation)
     {
     }
-    
+
     virtual void update(float delta)
     {
         gameGlobalInfo->variation = variation;

@@ -57,7 +57,7 @@ private:
 public:
     string global_message;
     float global_message_timeout;
-    
+
     string banner_string;
 
     std::vector<float> reputation_points;
@@ -69,6 +69,7 @@ public:
      */
     float long_range_radar_range;
     bool use_beam_shield_frequencies;
+    bool use_engineering_presets;
     bool use_system_damage;
     bool allow_main_screen_tactical_radar;
     bool allow_main_screen_long_range_radar;
