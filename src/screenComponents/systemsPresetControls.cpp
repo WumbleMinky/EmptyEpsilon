@@ -21,10 +21,11 @@ GuiSystemsPresetControls::GuiSystemsPresetControls(GuiContainer* owner, string i
 		buttons[n] =  new GuiButton(this, id + "_" + string(n) + "_PRESET_BUTTON", string(n+1), [this,n,selected_system,power_slider,coolant_slider](){
 			if (this->edit_button->getText()=="Cancel")
             {
-                if(!presets[n].empty())
+                if(!presets[n].empty())  //overwrite the settings.
                 {
                     presets[n].clear();
                 }
+                //save the settings for every system in the presets vector.
                 for(int i = 0; i < SYS_COUNT; i++)
                 {
                     SystemSetting sys;
@@ -54,28 +55,31 @@ GuiSystemsPresetControls::GuiSystemsPresetControls(GuiContainer* owner, string i
 		buttons[n]->setSize(50, 50);
 		buttons[n]->disable();
 	}
+
 	edit_button = new GuiButton(this, id + "_EDIT_BUTTON", "Save", [this](){
         this->toggleEditButton();
     });
     edit_button->setSize(50,50)->setPosition(0, 0, ACenter)->setMargins(0,-20,0,20);
     edit_button->setTextSize(20);
     edit_button->enable();
+
     preset_label = new GuiLabel(this, id + "_LABEL", "Presets", 40);
     preset_label->setVertical()->setSize(50, 150)->setPosition(0, 0, ATopCenter);
 }
 
+//toggle function that is used by the edit and preset buttons. Enables/disables the preset buttons and change the edit button text.
 void GuiSystemsPresetControls::toggleEditButton()
 {
+    //Enable the preset buttons in order to save a setting.
     if (this->edit_button->getText()=="Save")
     {
-
         for(int i = 0; i < this->NUM_OF_BUTTONS; i++)
         {
             this->buttons[i]->enable();
         }
         this->edit_button->setText("Cancel");
     }
-    else
+    else //disable the preset buttons unless they have a preset saved for them.
     {
         for(int i=0; i < this->NUM_OF_BUTTONS; i++)
         {
@@ -84,24 +88,4 @@ void GuiSystemsPresetControls::toggleEditButton()
         }
         this->edit_button->setText("Save");
     }
-}
-
-void GuiSystemsPresetControls::onDraw(sf::RenderTarget& window)
-{
-	//Update the Save Button and Preset button based on whether there are settings saved in the presets vector
-    if (!my_spaceship)
-        return;
-
-    for (int i = 0; i < NUM_OF_BUTTONS; i++)
-    {
-        if (presets[i].empty())
-        {
-            //buttons[i]->disable();
-        }
-        else
-        {
-            //buttons[i]->enable();
-        }
-    }
-	GuiAutoLayout::onDraw(window);
 }

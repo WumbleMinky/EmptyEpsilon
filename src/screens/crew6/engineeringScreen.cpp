@@ -123,6 +123,7 @@ EngineeringScreen::EngineeringScreen(GuiContainer* owner)
 
     (new GuiCustomShipFunctions(this, engineering, ""))->setPosition(-20, 120, ATopRight)->setSize(250, GuiElement::GuiSizeMax);
 
+    //Add the engineering presets, if they are enabled.
     if(gameGlobalInfo->use_engineering_presets)
     {
         preset_controls = new GuiSystemsPresetControls(this, "PRESET_CONTROLS", &selected_system, coolant_slider, power_slider);

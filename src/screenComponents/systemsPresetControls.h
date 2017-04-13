@@ -25,8 +25,6 @@ private:
 	std::vector< std::vector<SystemSetting> > presets;
 public:
 	GuiSystemsPresetControls(GuiContainer* owner, string id, ESystem* selected_system, GuiSlider* coolant_slider, GuiSlider* power_slider);
-
-	virtual void onDraw(sf::RenderTarget& window) override;
 private:
     void toggleEditButton();
 };
