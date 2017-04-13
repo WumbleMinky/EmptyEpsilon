@@ -12,6 +12,7 @@ class GuiImage;
 class GuiArrow;
 class GuiToggleButton;
 class GuiProgressbar;
+class GuiSystemsPresetControls;
 
 class EngineeringScreen : public GuiOverlay
 {
@@ -27,7 +28,7 @@ private:
     GuiSlider* power_slider;
     GuiLabel* coolant_label;
     GuiSlider* coolant_slider;
-    
+
     class SystemRow
     {
     public:
@@ -46,16 +47,17 @@ private:
     std::vector<GuiKeyValueDisplay*> system_effects;
     unsigned int system_effects_index;
     ESystem selected_system;
+    GuiSystemsPresetControls* preset_controls;
 
     float previous_energy_measurement;
     float previous_energy_level;
     float average_energy_delta;
-    
+
     void addSystemEffect(string key, string value);
     void selectSystem(ESystem system);
 public:
     EngineeringScreen(GuiContainer* owner);
-    
+
     virtual void onDraw(sf::RenderTarget& window) override;
     virtual void onHotkey(const HotkeyResult& key) override;
 };

@@ -6,6 +6,7 @@
 #include "screenComponents/selfDestructButton.h"
 #include "screenComponents/alertOverlay.h"
 #include "screenComponents/customShipFunctions.h"
+#include "screenComponents/systemsPresetControls.h"
 
 #include "gui/gui2_keyvaluedisplay.h"
 #include "gui/gui2_autolayout.h"
@@ -119,8 +120,12 @@ EngineeringScreen::EngineeringScreen(GuiContainer* owner)
     coolant_slider->disable();
 
     (new GuiShipInternalView(system_row_layouts, "SHIP_INTERNAL_VIEW", 48.0f))->setShip(my_spaceship)->setSize(GuiElement::GuiSizeMax, GuiElement::GuiSizeMax);
-    
+
     (new GuiCustomShipFunctions(this, engineering, ""))->setPosition(-20, 120, ATopRight)->setSize(250, GuiElement::GuiSizeMax);
+
+    preset_controls = new GuiSystemsPresetControls(this, "PRESET_CONTROLS", &selected_system, coolant_slider, power_slider);
+    float preset_pos_x = - (preset_controls->getSize().x + system_config_container->getSize().x) / 2;
+    preset_controls->setPosition(preset_pos_x, system_config_container->getPositionOffset().y, ABottomCenter);
 
     previous_energy_level = 0.0;
     average_energy_delta = 0.0;
@@ -143,7 +148,7 @@ void EngineeringScreen::onDraw(sf::RenderTarget& window)
                 float delta_e = my_spaceship->energy_level - previous_energy_level;
                 float delta_e_per_second = delta_e / delta_t;
                 average_energy_delta = average_energy_delta * 0.99 + delta_e_per_second * 0.01;
-                
+
                 previous_energy_level = my_spaceship->energy_level;
                 previous_energy_measurement = engine->getElapsedTime();
             }
@@ -197,7 +202,7 @@ void EngineeringScreen::onDraw(sf::RenderTarget& window)
             power_label->setText("Power: " + string(int(system.power_level * 100)) + "%/" + string(int(system.power_request * 100)) + "%");
             coolant_label->setText("Coolant: " + string(int(system.coolant_level / PlayerSpaceship::max_coolant * 100)) + "%/" + string(int(system.coolant_request / PlayerSpaceship::max_coolant * 100)) + "%");
             coolant_slider->setEnable(!my_spaceship->auto_coolant_enabled);
-            
+
             system_effects_index = 0;
             float effectiveness = my_spaceship->getSystemEffectiveness(selected_system);
             switch(selected_system)
@@ -291,7 +296,7 @@ void EngineeringScreen::onHotkey(const HotkeyResult& key)
         if (key.hotkey == "SELECT_JUMP_DRIVE") selectSystem(SYS_JumpDrive);
         if (key.hotkey == "SELECT_FRONT_SHIELDS") selectSystem(SYS_FrontShield);
         if (key.hotkey == "SELECT_REAR_SHIELDS") selectSystem(SYS_RearShield);
-        
+
         if (selected_system != SYS_None)
         {
             if (key.hotkey == "INCREASE_POWER")
@@ -322,7 +327,7 @@ void EngineeringScreen::selectSystem(ESystem system)
 {
     if (my_spaceship && !my_spaceship->hasSystem(system))
         return;
-    
+
     for(int idx=0; idx<SYS_COUNT; idx++)
     {
         system_rows[idx].button->setValue(idx == system);
