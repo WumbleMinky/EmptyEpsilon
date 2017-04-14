@@ -59,12 +59,12 @@ GuiSystemsPresetControls::GuiSystemsPresetControls(GuiContainer* owner, string i
 	edit_button = new GuiButton(this, id + "_EDIT_BUTTON", "Save", [this](){
         this->toggleEditButton();
     });
-    edit_button->setSize(50,50)->setPosition(0, 0, ACenter)->setMargins(0,-20,0,20);
+    edit_button->setSize(50,50)->setPosition(0, 0, ACenter)->setMargins(0,0,0,0);
     edit_button->setTextSize(20);
     edit_button->enable();
 
     preset_label = new GuiLabel(this, id + "_LABEL", "Presets", 40);
-    preset_label->setVertical()->setSize(50, 150)->setPosition(0, 0, ATopCenter);
+    preset_label->setVertical()->setSize(50, 120)->setPosition(0, 0, ATopCenter);
 }
 
 //toggle function that is used by the edit and preset buttons. Enables/disables the preset buttons and change the edit button text.

@@ -128,7 +128,7 @@ EngineeringScreen::EngineeringScreen(GuiContainer* owner)
     {
         preset_controls = new GuiSystemsPresetControls(this, "PRESET_CONTROLS", &selected_system, coolant_slider, power_slider);
         float preset_pos_x = - (preset_controls->getSize().x + system_config_container->getSize().x) / 2;
-        preset_controls->setPosition(preset_pos_x, system_config_container->getPositionOffset().y, ABottomCenter);
+        preset_controls->setPosition(preset_pos_x, system_config_container->getPositionOffset().y-25, ABottomCenter);
     }
 
     previous_energy_level = 0.0;
