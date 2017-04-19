@@ -5,6 +5,9 @@
 #include "explosionEffect.h"
 #include "gameGlobalInfo.h"
 #include "main.h"
+#include "missileWeapon.h"
+#include "hvli.h"
+#include "mine.h"
 
 #include "scriptInterface.h"
 
@@ -98,6 +101,7 @@ REGISTER_SCRIPT_SUBCLASS(PlayerSpaceship, SpaceShip)
     REGISTER_SCRIPT_CLASS_FUNCTION(PlayerSpaceship, commandCombatManeuverBoost);
     REGISTER_SCRIPT_CLASS_FUNCTION(PlayerSpaceship, commandSetScienceLink);
     REGISTER_SCRIPT_CLASS_FUNCTION(PlayerSpaceship, commandSetAlertLevel);
+    REGISTER_SCRIPT_CLASS_FUNCTION(PlayerSpaceship, commandDetonateMissile);
 
     // Return the number of Engineering repair crews on the ship.
     REGISTER_SCRIPT_CLASS_FUNCTION(PlayerSpaceship, getRepairCrewCount);
@@ -167,6 +171,7 @@ static const int16_t CMD_ABORT_DOCK = 0x0026;
 static const int16_t CMD_SET_MAIN_SCREEN_OVERLAY = 0x0027;
 static const int16_t CMD_HACKING_FINISHED = 0x0028;
 static const int16_t CMD_CUSTOM_FUNCTION = 0x0029;
+static const int16_t CMD_DETONATE_MISSILE = 0x002A;
 
 string alertLevelToString(EAlertLevel level)
 {
@@ -1462,6 +1467,30 @@ void PlayerSpaceship::onReceiveClientCommand(int32_t client_id, sf::Packet& pack
             }
         }
         break;
+    case CMD_DETONATE_MISSILE:
+        {
+            uint32_t id;
+            packet >> id;
+            P<SpaceObject> obj = game_server->getObjectById(id);
+            P<MissileWeapon> missile_obj = obj;
+            P<HVLI> hvli_obj = obj;
+            P<Mine> mine_obj = obj;
+            if((missile_obj || mine_obj) && !hvli_obj)
+            {
+                if(missile_obj && missile_obj->owner == this)
+                {
+                    missile_obj->hitObject(missile_obj);
+                    if(missile_obj)
+                        missile_obj->destroy();
+                }
+                else if(mine_obj && mine_obj->owner == this)
+                {
+                    mine_obj->explode();
+                }
+
+            }
+        }
+        break;
     }
 }
 
@@ -1756,6 +1785,14 @@ void PlayerSpaceship::commandCustomFunction(string name)
     sf::Packet packet;
     packet << CMD_CUSTOM_FUNCTION;
     packet << name;
+    sendClientCommand(packet);
+}
+
+void PlayerSpaceship::commandDetonateMissile(P<SpaceObject> target)
+{
+    sf::Packet packet;
+    packet << CMD_DETONATE_MISSILE;
+    packet << target->getMultiplayerId();
     sendClientCommand(packet);
 }
 

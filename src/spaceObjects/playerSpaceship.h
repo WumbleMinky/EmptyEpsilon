@@ -53,7 +53,7 @@ public:
     constexpr static int max_scan_probes = 8;
     // Subsystem effectiveness base rates
     static float system_power_user_factor[];
-    
+
     constexpr static int16_t CMD_PLAY_CLIENT_SOUND = 0x0001;
 
     // Content of a line in the ship's log
@@ -70,7 +70,7 @@ public:
 
         bool operator!=(const ShipLogEntry& e) { return prefix != e.prefix || text != e.text || color != e.color; }
     };
-    
+
     class CustomShipFunction
     {
     public:
@@ -85,7 +85,7 @@ public:
         string caption;
         ECrewPosition crew_position;
         ScriptSimpleCallback callback;
-        
+
         bool operator!=(const CustomShipFunction& csf) { return type != csf.type || name != csf.name || caption != csf.caption || crew_position != csf.crew_position; }
     };
 
@@ -125,7 +125,7 @@ private:
     CommsScriptInterface comms_script_interface; // Server only
     // Ship's log container
     std::vector<ShipLogEntry> ships_log;
-    
+
 public:
     std::vector<CustomShipFunction> custom_functions;
 
@@ -231,6 +231,7 @@ public:
     void commandSetAlertLevel(EAlertLevel level);
     void commandHackingFinished(P<SpaceObject> target, string target_system);
     void commandCustomFunction(string name);
+    void commandDetonateMissile(P<SpaceObject> target);
 
     virtual void onReceiveServerCommand(sf::Packet& packet) override;
 
@@ -250,7 +251,7 @@ public:
     virtual void update(float delta) override;
     virtual bool useEnergy(float amount) override;
     virtual void addHeat(ESystem system, float amount) override;
-    
+
     // Call on the server to play a sound on the main screen.
     void playSoundOnMainScreen(string sound_name);
 
