@@ -57,21 +57,26 @@ GuiMissileTubeControls::GuiMissileTubeControls(GuiContainer* owner, string id)
         row.loading_bar->setColor(sf::Color(128, 128, 128))->setSize(200, 50);
         row.loading_label = new GuiLabel(row.loading_bar, id + "_" + string(n) + "_PROGRESS_LABEL", "Loading", 35);
         row.loading_label->setSize(GuiElement::GuiSizeMax, GuiElement::GuiSizeMax);
-        
+
         rows[n] = row;
     }
-    
-    
+
+
     for (int n = MW_Count-1; n >= 0; n--)
     {
         load_type_rows[n].layout = new GuiAutoLayout(this, id + "_ROW_" + string(n), LayoutHorizontalLeftToRight);
         load_type_rows[n].layout->setSize(GuiElement::GuiSizeMax, 40);
-        
+
         load_type_rows[n].button = new GuiToggleButton(load_type_rows[n].layout, id + "_MW_" + string(n), getMissileWeaponName(EMissileWeapons(n)), [this, n](bool value) {
             if (value)
+            {
                 load_type = EMissileWeapons(n);
+                detonate_toggle_button->setValue(false);
+            }
             else
+            {
                 load_type = MW_None;
+            }
             for(int idx = 0; idx < MW_Count; idx++)
                 load_type_rows[idx].button->setValue(idx == load_type);
         });
@@ -82,6 +87,13 @@ GuiMissileTubeControls::GuiMissileTubeControls(GuiContainer* owner, string id)
     load_type_rows[MW_EMP].button->setIcon("gui/icons/weapon-emp.png");
     load_type_rows[MW_Nuke].button->setIcon("gui/icons/weapon-nuke.png");
     load_type_rows[MW_HVLI].button->setIcon("gui/icons/weapon-hvli.png");
+
+    GuiAutoLayout* detonate_layout = new GuiAutoLayout(this, id + "_DETONATE_LAYOUT", LayoutHorizontalLeftToRight);
+    detonate_layout->setSize(GuiElement::GuiSizeMax, 40);
+    detonate_toggle_button = new GuiToggleButton(detonate_layout, "DETONATE_MISSILE_TOGGLE", "Detonate", [this](bool value){
+        selectMissileWeapon(MW_None);
+    });
+    detonate_toggle_button->setValue(false)->setTextSize(28)->setSize(125, 40);
 }
 
 void GuiMissileTubeControls::onDraw(sf::RenderTarget& window){
@@ -92,7 +104,7 @@ void GuiMissileTubeControls::onDraw(sf::RenderTarget& window){
         load_type_rows[n].button->setText(getMissileWeaponName(EMissileWeapons(n)) + " [" + string(my_spaceship->weapon_storage[n]) + "/" + string(my_spaceship->weapon_storage_max[n]) + "]");
         load_type_rows[n].layout->setVisible(my_spaceship->weapon_storage_max[n] > 0);
     }
-    
+
     for (int n = 0; n < my_spaceship->weapon_tube_count; n++)
     {
         WeaponTube& tube = my_spaceship->weapon_tube[n];
@@ -162,6 +174,10 @@ void GuiMissileTubeControls::onHotkey(const HotkeyResult& key)
             selectMissileWeapon(MW_EMP);
         if (key.hotkey == "SELECT_MISSILE_TYPE_HVLI")
             selectMissileWeapon(MW_HVLI);
+        if (key.hotkey == "DETONATE_MISSILE")
+        {
+            setDetonateToggle(!getDetonateToggle());
+        }
 
         for(int n=0; n<my_spaceship->weapon_tube_count; n++)
         {
@@ -209,4 +225,14 @@ void GuiMissileTubeControls::selectMissileWeapon(EMissileWeapons type)
     load_type = type;
     for(int idx = 0; idx < MW_Count; idx++)
         load_type_rows[idx].button->setValue(idx == type);
+}
+
+bool GuiMissileTubeControls::getDetonateToggle()
+{
+    return detonate_toggle_button->getValue();
+}
+void GuiMissileTubeControls::setDetonateToggle(bool value)
+{
+    detonate_toggle_button->setValue(value);
+    selectMissileWeapon(MW_None);
 }

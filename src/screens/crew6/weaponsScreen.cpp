@@ -15,6 +15,7 @@
 #include "gui/gui2_rotationdial.h"
 #include "gui/gui2_label.h"
 #include "gui/gui2_keyvaluedisplay.h"
+#include "gui/gui2_togglebutton.h"
 
 WeaponsScreen::WeaponsScreen(GuiContainer* owner)
 : GuiOverlay(owner, "WEAPONS_SCREEN", colorConfig.background)
@@ -34,26 +35,30 @@ WeaponsScreen::WeaponsScreen(GuiContainer* owner)
     radar->setRangeIndicatorStepSize(1000.0)->shortRange()->enableCallsigns()->enableHeadingIndicators()->setStyle(GuiRadarView::Circular);
     radar->setCallbacks(
         [this](sf::Vector2f position) {
-            targets.setToClosestTo(position, 250, TargetsContainer::Targetable);
-            if (my_spaceship && targets.get())
-                my_spaceship->commandSetTarget(targets.get());
-            else if (my_spaceship)
-                my_spaceship->commandSetTarget(NULL);
-        }, nullptr, [this](sf::Vector2f position) {
-
-            P<SpaceObject> target;
-            PVector<Collisionable> list = CollisionManager::queryArea(position - sf::Vector2f(250, 250), position + sf::Vector2f(250, 250));
-            foreach(Collisionable, obj, list)
+            if(this->tube_controls->getDetonateToggle())
             {
-                P<SpaceObject> spaceObject = obj;
-                if (!target || sf::length(position - spaceObject->getPosition()) < sf::length(position - target->getPosition()))
-                    target = spaceObject;
+                P<SpaceObject> target;
+                PVector<Collisionable> list = CollisionManager::queryArea(position - sf::Vector2f(250, 250), position + sf::Vector2f(250, 250));
+                foreach(Collisionable, obj, list)
+                {
+                    P<SpaceObject> spaceObject = obj;
+                    if (!target || sf::length(position - spaceObject->getPosition()) < sf::length(position - target->getPosition()))
+                        target = spaceObject;
+                }
+                if (target){
+                    my_spaceship->commandDetonateMissile(target);
+                    this->tube_controls->setDetonateToggle(false);
+                }
             }
-            if (target){
-                my_spaceship->commandDetonateMissile(target);
+            else
+            {
+               targets.setToClosestTo(position, 250, TargetsContainer::Targetable);
+                if (my_spaceship && targets.get())
+                    my_spaceship->commandSetTarget(targets.get());
+                else if (my_spaceship)
+                    my_spaceship->commandSetTarget(NULL);
             }
-        }
-    );
+        }, nullptr, nullptr);
     missile_aim = new GuiRotationDial(this, "MISSILE_AIM", -90, 360 - 90, 0, [this](float value){
         tube_controls->setMissileTargetAngle(value);
     });

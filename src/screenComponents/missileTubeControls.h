@@ -29,17 +29,20 @@ private:
     EMissileWeapons load_type;
     bool manual_aim;
     float missile_target_angle;
+    GuiToggleButton* detonate_toggle_button;
 public:
     GuiMissileTubeControls(GuiContainer* owner, string id);
-    
+
     virtual void onDraw(sf::RenderTarget& window) override;
     virtual void onHotkey(const HotkeyResult& key) override;
-    
+
     void setMissileTargetAngle(float angle);
     float getMissileTargetAngle();
-    
+
     void setManualAim(bool manual);
     bool getManualAim();
+    bool getDetonateToggle();
+    void setDetonateToggle(bool value);
 
 private:
     void selectMissileWeapon(EMissileWeapons type);
