@@ -674,6 +674,8 @@
 		<Unit filename="src/screenComponents/signalQualityIndicator.h" />
 		<Unit filename="src/screenComponents/snapSlider.cpp" />
 		<Unit filename="src/screenComponents/snapSlider.h" />
+		<Unit filename="src/screenComponents/systemsPresetControls.cpp" />
+		<Unit filename="src/screenComponents/systemsPresetControls.h" />
 		<Unit filename="src/screenComponents/targetsContainer.cpp" />
 		<Unit filename="src/screenComponents/targetsContainer.h" />
 		<Unit filename="src/screenComponents/viewport3d.cpp" />
